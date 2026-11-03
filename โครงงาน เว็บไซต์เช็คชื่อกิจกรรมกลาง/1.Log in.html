@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f3d82">
+<title>เข้าสู่ระบบ | สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy: #0f3d82;
+    --blue: #1c5fae;
+    --blue-bright: #2f8fe0;
+    --sky: #6cc0f2;
+    --gold: #e8d7a3;
+    --bg: #e9f2fd;
+    --surface: #ffffff;
+    --field: #f1f6fc;
+    --text: #15294a;
+    --muted: #62799a;
+    --error: #b3402f;
+  }
+  * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+  /* ห้ามคลุมดำ/คัดลอกข้อความ */
+  html, body, body * {
+    -webkit-user-select: none; user-select: none;
+    -webkit-touch-callout: none;
+  }
+  input { -webkit-user-select: text; user-select: text; }
+  img { -webkit-user-drag: none; user-drag: none; pointer-events: none; }
+  html { -webkit-text-size-adjust: 100%; }
+  body {
+    margin: 0;
+    min-height: 100vh; min-height: 100dvh;
+    font-family: "Noto Sans Thai", system-ui, sans-serif;
+    color: var(--text);
+    line-height: 1.6;
+    display: flex; flex-direction: column; align-items: center; justify-content: center;
+    padding: max(clamp(20px, 5vh, 40px), env(safe-area-inset-top)) max(clamp(14px, 4.5vw, 32px), env(safe-area-inset-left)) max(clamp(20px, 5vh, 40px), env(safe-area-inset-bottom)) max(clamp(14px, 4.5vw, 32px), env(safe-area-inset-right));
+    position: relative; overflow-x: hidden;
+    background:
+      radial-gradient(circle at 1px 1px, rgba(28,95,174,.16) 1.2px, transparent 1.6px) 0 0 / 22px 22px,
+      linear-gradient(180deg, #d7e9fb 0%, var(--bg) 45%, #f3f8ff 100%);
+    background-attachment: fixed;
+  }
+
+  /* ลายประดับพื้นหลัง */
+  .deco { position: fixed; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+  .deco i { position: absolute; display: block; border-radius: 50%; }
+  .deco .a { width: 340px; height: 340px; top: -120px; left: -110px; background: radial-gradient(circle, rgba(108,192,242,.65), transparent 70%); filter: blur(30px); }
+  .deco .b { width: 400px; height: 400px; bottom: -150px; right: -130px; background: radial-gradient(circle, rgba(47,143,224,.5), transparent 70%); filter: blur(34px); }
+  .deco .c { width: 120px; height: 120px; top: 14%; right: -34px; border: 2px solid rgba(28,95,174,.22); }
+  .deco .d { width: 70px; height: 70px; bottom: 16%; left: -20px; border: 2px solid rgba(232,215,163,.9); }
+  .deco .e { width: 14px; height: 14px; top: 22%; left: 12%; background: var(--gold); }
+  .deco .f { width: 10px; height: 10px; bottom: 26%; right: 14%; background: var(--blue-bright); opacity: .6; }
+
+  .wrap { position: relative; z-index: 1; width: 100%; max-width: 460px; }
+
+  /* โลโก้ + ชื่อสาขา */
+  .brand { text-align: center; margin-bottom: clamp(16px, 3.5vh, 26px); }
+  #logo {
+    width: clamp(68px, 20vw, 92px); height: clamp(68px, 20vw, 92px); margin: 0 auto clamp(10px, 2vh, 14px);
+    border-radius: 50%; background: #fff; padding: 7px;
+    display: grid; place-items: center; overflow: hidden;
+    box-shadow: 0 10px 26px rgba(28,95,174,.25), 0 0 0 4px #fff, 0 0 0 6px var(--gold);
+  }
+  #logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+  #logo .ph { display: none; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; font-weight: 500; line-height: 1.2; }
+  #logo .ph svg { width: 26px; height: 26px; }
+  #logo.noimg { background: rgba(255,255,255,.7); border: 2px dashed var(--blue-bright); color: var(--blue); box-shadow: none; }
+  #logo.noimg img { display: none; }
+  #logo.noimg .ph { display: flex; }
+  .dept-th { margin: 0; font-size: clamp(19px, 5.4vw, 26px); font-weight: 700; line-height: 1.4; color: var(--navy); text-wrap: balance; }
+  .dept-en { margin: 4px 0 0; font-size: clamp(12px, 3.3vw, 14px); color: var(--muted); text-wrap: balance; }
+
+  /* การ์ด */
+  .card {
+    background: var(--surface);
+    border-radius: 28px;
+    overflow: hidden;
+    box-shadow: 0 1px 2px rgba(15,61,130,.06), 0 20px 50px rgba(28,95,174,.2);
+  }
+
+  /* แบนเนอร์ต้อนรับด้านบนการ์ด */
+  .banner {
+    position: relative; overflow: hidden;
+    padding: clamp(22px, 5.5vw, 30px) clamp(22px, 6vw, 30px) clamp(48px, 11vw, 58px);
+    color: #fff;
+    background:
+      repeating-linear-gradient(135deg, rgba(255,255,255,.05) 0 2px, transparent 2px 14px),
+      linear-gradient(115deg, #0b2f6b 0%, var(--blue) 28%, var(--blue-bright) 50%, var(--blue) 72%, #0b2f6b 100%);
+    background-size: auto, 300% 100%;
+  }
+  .banner::before, .banner::after { content: ""; position: absolute; border-radius: 50%; pointer-events: none; }
+  .banner::before { width: 220px; height: 220px; right: -60px; top: -90px; background: rgba(255,255,255,.1); }
+  .banner::after  { width: 120px; height: 120px; right: 70px; bottom: -50px; border: 2px solid rgba(232,215,163,.75); }
+  .banner h2 { margin: 0; font-size: clamp(23px, 6.6vw, 28px); font-weight: 700; line-height: 1.3; position: relative; }
+  .banner p  { margin: 6px 0 0; font-size: clamp(13.5px, 3.7vw, 15px); line-height: 1.55; color: rgba(255,255,255,.85); position: relative; }
+  .clock { position: relative; margin-top: clamp(14px, 3.5vw, 20px); display: flex; align-items: baseline; gap: 6px 14px; flex-wrap: wrap; }
+  .time { font-size: clamp(30px, 9vw, 38px); font-weight: 700; line-height: 1; letter-spacing: .02em; font-variant-numeric: tabular-nums; }
+  .date { font-size: clamp(13px, 3.6vw, 14.5px); color: var(--gold); font-weight: 500; }
+  .wave { position: absolute; left: 0; bottom: -1px; width: 200%; height: 30px; display: block; }
+  .wave.back { height: 34px; }
+  .shine { position: absolute; top: 0; bottom: 0; left: -50%; width: 40%; pointer-events: none; transform: skewX(-18deg);
+    background: linear-gradient(90deg, transparent, rgba(255,255,255,.16), transparent); opacity: 0; }
+
+  /* ฟอร์ม (ซ้อนทับแบนเนอร์เล็กน้อย) */
+  form { position: relative; padding: 14px clamp(20px, 6vw, 30px) clamp(24px, 6vw, 32px); background: var(--surface); }
+  .role {
+    display: inline-flex; align-items: center; gap: 6px;
+    font-size: 13px; color: var(--blue); font-weight: 500;
+    background: #e6f0fc; border-radius: 999px; padding: 3px 12px 3px 8px; margin-bottom: clamp(18px, 4.5vw, 24px);
+  }
+  .role::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--blue-bright); box-shadow: 0 0 0 3px rgba(47,143,224,.22); }
+
+  .field { margin-bottom: clamp(16px, 4.2vw, 20px); }
+  label { display: block; font-weight: 500; font-size: 14.5px; margin: 0 0 8px 2px; }
+  .control { position: relative; }
+  .ico {
+    position: absolute; left: 16px; top: 50%; transform: translateY(-50%);
+    width: 20px; height: 20px; color: var(--muted); pointer-events: none; transition: color .15s;
+  }
+  input {
+    width: 100%; height: 54px;
+    font: inherit; font-size: 16px;
+    padding: 0 16px 0 48px;
+    color: var(--text);
+    background: var(--field);
+    border: 2px solid transparent;
+    border-radius: 16px;
+    transition: border-color .15s, background .15s, box-shadow .15s;
+  }
+  input:focus { outline: none; background: #fff; border-color: var(--blue-bright); box-shadow: 0 0 0 4px rgba(47,143,224,.16); }
+  .control:focus-within .ico { color: var(--blue); }
+  .pw-wrap input { padding-right: 76px; }
+  .toggle {
+    position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+    min-width: 56px; height: 42px; padding: 0 12px;
+    font: inherit; font-size: 14px; font-weight: 500;
+    color: var(--blue); background: none; border: 0; border-radius: 12px; cursor: pointer;
+  }
+  .toggle:active { background: #dfeafa; }
+
+  .msg { margin: 0; font-size: 14px; color: var(--error); text-align: center; }
+  .msg:not(:empty) { margin: 0 0 14px; padding: 10px 14px; background: #fcefed; border-radius: 14px; }
+
+  .submit {
+    width: 100%; height: 56px; margin-top: 6px;
+    font: inherit; font-size: 17px; font-weight: 600; color: #fff;
+    border: 0; border-radius: 18px; cursor: pointer;
+    background: linear-gradient(135deg, var(--navy), var(--blue) 55%, var(--blue-bright));
+    box-shadow: 0 10px 22px rgba(28,95,174,.32);
+    transition: transform .15s, box-shadow .15s, filter .15s;
+  }
+  .submit:hover:not(:disabled) { filter: brightness(1.07); box-shadow: 0 14px 28px rgba(28,95,174,.38); }
+  .submit:active:not(:disabled) { transform: scale(.985); }
+  .submit:disabled { opacity: .6; cursor: not-allowed; }
+  button:focus-visible { outline: 3px solid var(--blue-bright); outline-offset: 2px; }
+
+  footer { margin-top: clamp(16px, 3.5vh, 26px); text-align: center; font-size: 12.5px; color: var(--muted); }
+  footer b { display: block; width: 36px; height: 3px; background: var(--gold); border-radius: 2px; margin: 0 auto 8px; }
+
+  /* ===== ความยืดหยุ่นตามขนาดหน้าจอ ===== */
+  /* จอแคบมาก (≤ 360px): ลดช่องว่างภายในเล็กน้อย */
+  @media (max-width: 360px) {
+    input { padding-left: 44px; }
+    .ico { left: 14px; }
+    .deco .c, .deco .d { display: none; }
+  }
+  /* จอเตี้ย (แนวตั้งขนาดเล็ก): ให้เลื่อนลงได้ ไม่บีบเนื้อหา */
+  @media (max-height: 700px) and (orientation: portrait) {
+    body { justify-content: flex-start; }
+  }
+  /* มือถือแนวนอน: วางสองฝั่ง ชื่อสาขาซ้าย ฟอร์มขวา */
+  @media (orientation: landscape) and (max-height: 560px) and (min-width: 640px) {
+    body { justify-content: center; }
+    .wrap {
+      max-width: 880px;
+      display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr);
+      column-gap: clamp(20px, 4vw, 44px); align-items: center;
+    }
+    .brand { grid-column: 1; grid-row: 1; margin: 0; }
+    footer { grid-column: 1; grid-row: 2; margin-top: 14px; }
+    .card  { grid-column: 2; grid-row: 1 / span 2; }
+    .banner { padding-bottom: 46px; }
+  }
+  /* จอใหญ่ (แท็บเล็ต/คอม): การ์ดกว้างขึ้นเล็กน้อย */
+  @media (min-width: 900px) and (min-height: 700px) {
+    .wrap { max-width: 480px; }
+  }
+  /* ===== แอนิเมชันพื้นหลังและแบนเนอร์ (ปิดอัตโนมัติถ้าผู้ใช้ตั้งค่าลดการเคลื่อนไหว) ===== */
+  @media (prefers-reduced-motion: no-preference) {
+    body { animation: dots 40s linear infinite; }
+    @keyframes dots { to { background-position: 22px 22px, 0 0; } }
+
+    .deco .a { animation: driftA 16s ease-in-out infinite alternate; }
+    .deco .b { animation: driftB 19s ease-in-out infinite alternate; }
+    .deco .c { animation: floatC 9s ease-in-out infinite alternate; }
+    .deco .d { animation: floatD 11s ease-in-out infinite alternate; }
+    .deco .e { animation: floatE 7s ease-in-out infinite alternate; }
+    .deco .f { animation: floatF 8s ease-in-out infinite alternate; }
+    @keyframes driftA { to { transform: translate(90px, 70px) scale(1.2); } }
+    @keyframes driftB { to { transform: translate(-100px, -60px) scale(1.15); } }
+    @keyframes floatC { to { transform: translate(-26px, 40px) scale(1.15); } }
+    @keyframes floatD { to { transform: translate(36px, -34px) scale(.85); } }
+    @keyframes floatE { to { transform: translate(40px, 60px); } }
+    @keyframes floatF { to { transform: translate(-50px, -46px); } }
+
+    .banner { animation: sweep 14s ease-in-out infinite alternate; }
+    @keyframes sweep { from { background-position: 0 0, 0% 50%; } to { background-position: 0 0, 100% 50%; } }
+    .banner::before { animation: bannerA 9s ease-in-out infinite alternate; }
+    .banner::after  { animation: bannerB 7s ease-in-out infinite alternate; }
+    @keyframes bannerA { to { transform: translate(-40px, 26px) scale(1.18); } }
+    @keyframes bannerB { to { transform: translate(-34px, -14px) rotate(40deg) scale(1.2); } }
+    .shine { animation: shine 6.5s ease-in-out 1s infinite; }
+    @keyframes shine { 0% { left: -50%; opacity: 0; } 15% { opacity: 1; } 55% { left: 120%; opacity: 1; } 56%,100% { left: 120%; opacity: 0; } }
+    .wave.front { animation: waveL 9s linear infinite; }
+    .wave.back  { animation: waveR 13s linear infinite; }
+    @keyframes waveL { to { transform: translateX(-50%); } }
+    @keyframes waveR { from { transform: translateX(-50%); } to { transform: translateX(0); } }
+  }
+  /* ===== แอนิเมชันตอนเปิดเว็บ ===== */
+  .intro { display: none; }
+  @media (prefers-reduced-motion: no-preference) {
+    .intro {
+      position: fixed; inset: 0; z-index: 100;
+      display: grid; place-items: center; align-content: center; justify-items: center; gap: 0;
+      color: #fff; text-align: center; padding: 24px;
+      background:
+        radial-gradient(circle at 50% 38%, rgba(108,192,242,.35), transparent 55%),
+        linear-gradient(160deg, #071c40 0%, #0f3d82 55%, #1c5fae 100%);
+      animation: introOut 1.5s cubic-bezier(.77,0,.18,1) forwards;
+      pointer-events: none;
+    }
+    .intro::before, .intro::after {
+      content: ""; position: absolute; border-radius: 50%; pointer-events: none;
+      border: 2px solid rgba(232,215,163,.5);
+      width: 180px; height: 180px; top: calc(50% - 150px); left: calc(50% - 90px);
+      animation: ripple 1.1s ease-out .05s 1 both;
+    }
+    .intro::after { animation-delay: .3s; border-color: rgba(143,208,247,.45); }
+    .intro-logo {
+      width: clamp(92px, 26vw, 120px); height: clamp(92px, 26vw, 120px);
+      border-radius: 50%; background: #fff; padding: 9px; overflow: hidden;
+      display: grid; place-items: center;
+      box-shadow: 0 0 0 4px rgba(255,255,255,.25), 0 0 0 7px var(--gold), 0 18px 40px rgba(0,0,0,.35);
+      animation: logoIn .5s cubic-bezier(.2,.9,.3,1.25) .05s both;
+    }
+    .intro-logo img { width: 100%; height: 100%; object-fit: contain; border-radius: 50%; }
+    .intro-logo .ph { display: none; flex-direction: column; align-items: center; gap: 4px; font-size: 13px; font-weight: 500; line-height: 1.2; }
+    .intro-logo .ph svg { width: 34px; height: 34px; }
+    .intro-logo.noimg { background: rgba(255,255,255,.1); border: 2px dashed var(--gold); color: #fff; box-shadow: 0 0 0 6px rgba(255,255,255,.08), 0 18px 40px rgba(0,0,0,.3); }
+    .intro-logo.noimg img { display: none; }
+    .intro-logo.noimg .ph { display: flex; }
+    .intro-title { margin: 22px 0 0; font-size: clamp(19px, 5.4vw, 26px); font-weight: 700; line-height: 1.4; animation: fadeUp .4s ease-out .3s both; text-wrap: balance; }
+    .intro-sub { margin: 4px 0 0; font-size: clamp(12px, 3.3vw, 14px); color: var(--sky); animation: fadeUp .4s ease-out .4s both; }
+    .intro-bar { width: min(180px, 46vw); height: 3px; margin-top: 26px; border-radius: 3px; background: rgba(255,255,255,.18); overflow: hidden; animation: fadeUp .3s ease-out .4s both; }
+    .intro-bar i { display: block; height: 100%; width: 100%; background: linear-gradient(90deg, var(--gold), #fff); transform-origin: left; animation: load .75s cubic-bezier(.5,.1,.2,1) .45s both; }
+
+    @keyframes introOut {
+      0%, 70% { transform: translateY(0); visibility: visible; }
+      99%     { transform: translateY(-100%); visibility: visible; }
+      100%    { transform: translateY(-100%); visibility: hidden; }
+    }
+    @keyframes logoIn  { from { opacity: 0; transform: scale(.4) rotate(-12deg); } to { opacity: 1; transform: none; } }
+    @keyframes fadeUp  { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+    @keyframes load    { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+    @keyframes ripple  { from { opacity: .9; transform: scale(.7); } to { opacity: 0; transform: scale(3.2); } }
+
+    /* ทยอยแสดงเนื้อหาหลังม่านเปิด */
+    .brand, .card, .field, .submit, footer { animation: rise .5s cubic-bezier(.2,.7,.2,1) var(--d, 1s) both; }
+    .brand  { --d: 1s; }
+    .card   { --d: 1.08s; }
+    .field:nth-of-type(2) { --d: 1.22s; }
+    .field:nth-of-type(3) { --d: 1.3s; }
+    .submit { --d: 1.38s; }
+    footer  { --d: 1.46s; }
+    @keyframes rise { from { opacity: 0; transform: translateY(26px) scale(.985); } to { opacity: 1; transform: none; } }
+  }
+</style>
+</head>
+<body>
+
+<div class="intro" aria-hidden="true">
+  <div class="intro-logo"><img src="img/DBT FVE.jpg" alt="" onerror="this.closest('.intro-logo').classList.add('noimg')"><span class="ph"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>ใส่โลโก้</span></div>
+  <p class="intro-title">สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล</p>
+  <p class="intro-sub">Digital Business Technology</p>
+  <div class="intro-bar"><i></i></div>
+</div>
+
+<div class="deco" aria-hidden="true"><i class="a"></i><i class="b"></i><i class="c"></i><i class="d"></i><i class="e"></i><i class="f"></i></div>
+
+<div class="wrap">
+  <header class="brand">
+    <!-- ที่ใส่รูป/โลโก้: วางไฟล์ไว้ที่ img/DBT FVE.jpg (หรือแก้ชื่อไฟล์ใน src) ถ้ายังไม่มีรูปจะแสดงกรอบเว้นที่ไว้แทน -->
+    <div id="logo"><img src="img/DBT FVE.jpg" alt="โลโก้สาขา" onerror="this.closest('#logo').classList.add('noimg')"><span class="ph" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="3"/><circle cx="9" cy="10" r="1.6"/><path d="M21 16l-5-5-8 8"/></svg>ใส่โลโก้</span></div>
+    <h1 class="dept-th">สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล</h1>
+    <p class="dept-en">Digital Business Technology</p>
+  </header>
+
+  <main class="card">
+    <div class="banner">
+      <h2>ยินดีต้อนรับ</h2>
+      <p id="greet">เข้าสู่ระบบเพื่อเริ่มใช้งาน</p>
+      <div class="clock" aria-hidden="true"><span class="time" id="time">--:--</span><span class="date" id="date"></span></div>
+      <div class="shine" aria-hidden="true"></div>
+      <svg class="wave back" viewBox="0 0 800 34" preserveAspectRatio="none" aria-hidden="true"><path d="M0 17 Q50 2 100 17 T200 17 T300 17 T400 17 T500 17 T600 17 T700 17 T800 17 V34 H0Z" fill="rgba(255,255,255,.35)"/></svg>
+      <svg class="wave front" viewBox="0 0 800 30" preserveAspectRatio="none" aria-hidden="true"><path d="M0 15 Q50 30 100 15 T200 15 T300 15 T400 15 T500 15 T600 15 T700 15 T800 15 V30 H0Z" fill="#fff"/></svg>
+    </div>
+
+    <form id="loginForm" autocomplete="on">
+      <div class="role">สำหรับครูและผู้ดูแลระบบ</div>
+
+      <div class="field">
+        <label for="username">ชื่อผู้ใช้</label>
+        <div class="control">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/></svg>
+          <input id="username" name="username" type="text" autocomplete="username" autocapitalize="none" autocorrect="off" spellcheck="false" required autofocus>
+        </div>
+      </div>
+
+      <div class="field">
+        <label for="password">รหัสผ่าน</label>
+        <div class="control pw-wrap">
+          <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="4" y="11" width="16" height="10" rx="2.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+          <input id="password" name="password" type="password" autocomplete="current-password" required>
+          <button type="button" class="toggle" id="toggle">แสดง</button>
+        </div>
+      </div>
+
+      <p class="msg" id="msg" role="alert" aria-live="polite"></p>
+      <button class="submit" id="submit" type="submit">เข้าสู่ระบบ</button>
+    </form>
+  </main>
+
+  <footer><b></b>เว็บไซต์ลงชื่อเข้าร่วมกิจกรรมกลาง</footer>
+</div>
+
+<script>
+/* กันการคลุมดำ คัดลอก ลากข้อความ และเมนูคลิกขวา */
+(function () {
+  const stop = e => e.preventDefault();
+  ["copy", "cut", "contextmenu", "dragstart"].forEach(t => document.addEventListener(t, stop));
+  document.addEventListener("selectstart", e => {
+    const t = e.target;
+    if (!(t && t.closest && t.closest("input"))) e.preventDefault();
+  });
+  document.addEventListener("keydown", e => {
+    if ((e.ctrlKey || e.metaKey) && ["a", "c", "x", "s", "u", "p"].includes(e.key.toLowerCase())) {
+      if (e.key.toLowerCase() === "a" && e.target.tagName === "INPUT") return;
+      e.preventDefault();
+    }
+  });
+})();
+</script>
+<script>
+/* นาฬิกาและวันที่ภาษาไทยบนแบนเนอร์ */
+(function () {
+  const days = ["อาทิตย์","จันทร์","อังคาร","พุธ","พฤหัสบดี","ศุกร์","เสาร์"];
+  const months = ["ม.ค.","ก.พ.","มี.ค.","เม.ย.","พ.ค.","มิ.ย.","ก.ค.","ส.ค.","ก.ย.","ต.ค.","พ.ย.","ธ.ค."];
+  const t = document.getElementById("time"), d = document.getElementById("date"), g = document.getElementById("greet");
+  function tick() {
+    const n = new Date(), h = n.getHours();
+    t.textContent = String(h).padStart(2, "0") + ":" + String(n.getMinutes()).padStart(2, "0");
+    d.textContent = "วัน" + days[n.getDay()] + "ที่ " + n.getDate() + " " + months[n.getMonth()] + " " + (n.getFullYear() + 543);
+    g.textContent = (h < 12 ? "สวัสดีตอนเช้า" : h < 17 ? "สวัสดีตอนบ่าย" : "สวัสดีตอนเย็น") + " เข้าสู่ระบบเพื่อเริ่มใช้งาน";
+  }
+  tick(); setInterval(tick, 20000);
+})();
+</script>
+<script>
+/* =====================================================
+   ตั้งค่าบัญชีผู้ใช้ตรงนี้
+   เก็บรหัสผ่านเป็นค่า SHA-256 (ไม่ใช่ตัวอักษรจริง)
+   วิธีสร้างค่าใหม่: เปิดหน้านี้ > กด F12 > แท็บ Console
+   พิมพ์  makeHash("รหัสผ่านที่ต้องการ")  แล้วคัดลอกผลลัพธ์มาใส่
+   ===================================================== */
+const USERS = [
+  // รหัสเริ่มต้น: admin1234 และ teacher1234  (ต้องเปลี่ยนก่อนใช้งานจริง)
+  { username: "admin",   role: "ผู้ดูแลระบบ", hash: "03ac674216f3e15c761ee1a5e255f067953623c8b388b4459e13f978d7c846f4" },
+  { username: "teacher", role: "ครู",          hash: "dfff8b45f566ab42bcda647140c53ada2ea8614e689ef51f77c23a68f77afad3" },
+];
+
+const NEXT_PAGE = "2.interface 1.html";   // หน้าที่จะไปหลังล็อกอินสำเร็จ
+const SESSION_KEY = "dbt_auth";
+
+/* =====================================================
+   โค้ดทำงาน
+   ===================================================== */
+async function sha256(text) {
+  const buf = await crypto.subtle.digest("SHA-256", new TextEncoder().encode(text));
+  return Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2, "0")).join("");
+}
+window.makeHash = async pw => { const h = await sha256(pw); console.log(h); return h; };
+
+// ถ้าล็อกอินอยู่แล้ว ข้ามไปหน้าหลัก
+try { if (sessionStorage.getItem(SESSION_KEY)) location.replace(NEXT_PAGE); } catch (e) {}
+
+const form = document.getElementById("loginForm");
+const msg = document.getElementById("msg");
+const submit = document.getElementById("submit");
+const pw = document.getElementById("password");
+let fails = 0;
+
+document.getElementById("toggle").addEventListener("click", e => {
+  const show = pw.type === "password";
+  pw.type = show ? "text" : "password";
+  e.target.textContent = show ? "ซ่อน" : "แสดง";
+});
+
+form.addEventListener("submit", async e => {
+  e.preventDefault();
+  msg.textContent = "";
+  if (!window.crypto || !crypto.subtle) {
+    msg.textContent = "เบราว์เซอร์นี้ไม่รองรับ กรุณาเปิดผ่าน https หรือ localhost";
+    return;
+  }
+  submit.disabled = true;
+  const name = document.getElementById("username").value.trim();
+  const hash = await sha256(pw.value);
+  const user = USERS.find(u => u.username === name && u.hash === hash);
+
+  if (user) {
+    try { sessionStorage.setItem(SESSION_KEY, JSON.stringify({ user: user.username, role: user.role })); } catch (err) {}
+    location.replace(NEXT_PAGE);
+    return;
+  }
+
+  fails++;
+  msg.textContent = "ชื่อผู้ใช้หรือรหัสผ่านไม่ถูกต้อง";
+  pw.value = "";
+  pw.focus();
+  // ผิดหลายครั้งให้รอสักครู่
+  const wait = fails >= 3 ? Math.min(fails * 2, 20) : 0;
+  if (wait) {
+    let t = wait;
+    const timer = setInterval(() => {
+      msg.textContent = `ลองผิดหลายครั้ง กรุณารอ ${t} วินาที`;
+      if (--t < 0) { clearInterval(timer); msg.textContent = ""; submit.disabled = false; }
+    }, 1000);
+  } else {
+    submit.disabled = false;
+  }
+});
+</script>
+</body>
+</html>

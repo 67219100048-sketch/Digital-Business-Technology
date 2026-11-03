@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>ลงชื่อกิจกรรมกลาง | สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #eaf3fc;
+    --surface: #ffffff;
+    --header-text: #ffffff;
+    --accent: #2f7fd1;
+    --accent-dark: #1c5fae;
+    --accent-soft: #d8e9fa;
+    --gold: #e8d7a3;
+    --text: #17304d;
+    --muted: #55708f;
+    --line: #bcd5ee;
+    --focus: #1c5fae;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    font-family: "Noto Sans Thai", system-ui, sans-serif;
+    background: linear-gradient(180deg, #dcecfb 0%, var(--bg) 280px, #f4f9ff 100%) fixed;
+    color: var(--text);
+    line-height: 1.6;
+    overflow-x: hidden;
+    /* ห้ามคลุมดำ/เลือกข้อความ */
+    -webkit-user-select: none;
+    user-select: none;
+    -webkit-touch-callout: none;          /* iOS: ไม่ให้กดค้างแล้วขึ้นเมนูคัดลอก */
+    -webkit-tap-highlight-color: transparent;
+  }
+  img { -webkit-user-drag: none; user-drag: none; }
+  ::selection { background: transparent; }
+
+  /* ---------- Header ---------- */
+  header {
+    color: var(--header-text);
+    padding: 22px 24px;
+    background: linear-gradient(110deg, #0f3d82 0%, #1c5fae 38%, #2f8fe0 72%, #6cc0f2 100%);
+    border-bottom: 3px solid var(--gold);
+    box-shadow: 0 6px 18px rgba(28,95,174,.25);
+  }
+  .header-inner {
+    max-width: 1000px;
+    margin: 0 auto;
+    display: flex;
+    align-items: center;
+    gap: 18px;
+  }
+  #logo {
+    width: 72px; height: 72px;
+    flex: none;
+    border: 2px dashed rgba(255,255,255,.6);
+    background: rgba(255,255,255,.12);
+    border-radius: 8px;
+    display: grid; place-items: center;
+    font-size: 12px; color: rgba(255,255,255,.7);
+    overflow: hidden;
+  }
+  #logo img { width: 100%; height: 100%; object-fit: contain; }
+  .dept-th { text-shadow: 0 1px 3px rgba(0,0,0,.2); margin: 0; font-size: clamp(20px, 3.4vw, 28px); font-weight: 700; line-height: 1.3; }
+  .dept-en { margin: 0; font-size: clamp(13px, 2vw, 16px); font-weight: 400; opacity: .85; }
+
+  /* ---------- Layout ---------- */
+  main { max-width: 1000px; margin: 0 auto; padding: 28px 24px 56px; }
+  h2 { font-size: 20px; font-weight: 600; margin: 0 0 14px; padding-left: 12px; border-left: 4px solid var(--accent); color: var(--accent-dark); }
+  section + section { margin-top: 36px; padding-top: 28px; border-top: 1px solid var(--line); }
+
+  /* ---------- เมนูห้องเรียน ---------- */
+  .class-menu { display: flex; flex-wrap: wrap; gap: 10px; position: relative; }
+  .class-btn {
+    position: relative; overflow: hidden;
+    font: inherit; font-weight: 500;
+    min-width: 110px;
+    padding: 10px 20px;
+    background: var(--surface);
+    color: var(--text);
+    border: 1px solid var(--line);
+    border-radius: 999px;
+    cursor: pointer;
+    transition: background .15s, color .15s, border-color .15s, transform .15s;
+  }
+  .class-btn:hover { background: var(--accent-soft); }
+  .class-btn:active { transform: scale(.94); }
+  .class-btn[aria-pressed="true"] {
+    background: linear-gradient(135deg, var(--accent-dark), var(--accent));
+    border-color: var(--accent-dark);
+    color: #fff;
+    box-shadow: 0 4px 12px rgba(28,95,174,.3);
+  }
+  /* วงคลื่นตอนกดปุ่ม */
+  .ripple {
+    position: absolute; border-radius: 50%;
+    width: 20px; height: 20px; margin: -10px 0 0 -10px;
+    background: rgba(255,255,255,.65);
+    pointer-events: none;
+    animation: ripple .6s ease-out forwards;
+  }
+  @keyframes ripple { to { transform: scale(14); opacity: 0; } }
+
+  /* ---------- กิจกรรม ---------- */
+  .activity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(190px, 1fr));
+    gap: 16px;
+    perspective: 1000px;
+  }
+  .activity {
+    position: relative;
+    display: block;
+    text-decoration: none;
+    color: inherit;
+    background: var(--surface);
+    border: 1px solid var(--line);
+    border-radius: 12px;
+    overflow: hidden;
+    box-shadow: 0 2px 8px rgba(28,95,174,.08);
+    transition: border-color .15s, transform .15s, box-shadow .15s;
+  }
+  .activity:hover { border-color: var(--accent); transform: translateY(-2px); box-shadow: 0 10px 22px rgba(28,95,174,.22); }
+  .activity-title {
+    background: linear-gradient(135deg, #1c5fae, #3a93e3);
+    color: #fff;
+    padding: 11px 12px;
+    text-align: center;
+    font-weight: 600;
+  }
+  .activity-body {
+    height: 96px;
+    display: grid; place-items: center;
+    background: linear-gradient(160deg, #cfe4f8, #a9cdee);
+    color: rgba(28,95,174,.6);
+    font-size: 13px;
+  }
+  .activity-body img { width: 100%; height: 100%; object-fit: cover; }
+
+  /* ===== แอนิเมชันสลับชั้นเรียน =====
+     --dir = 1 เมื่อเลือกชั้นที่สูงขึ้น (เลื่อนเข้าจากขวา), -1 เมื่อย้อนกลับ (เข้าจากซ้าย) */
+  .activity-grid.swap .activity {
+    animation: cardIn .65s cubic-bezier(.2,.9,.25,1.15) backwards;
+    animation-delay: calc(var(--i) * 85ms);
+  }
+  @keyframes cardIn {
+    0%   { opacity: 0; filter: blur(8px);
+           transform: translateX(calc(var(--dir) * 70px)) translateY(24px) rotateY(calc(var(--dir) * -40deg)) scale(.85); }
+    60%  { filter: blur(0); }
+    100% { opacity: 1; filter: blur(0); transform: none; }
+  }
+  /* แสงวิ่งผ่านการ์ดหลังลงที่ */
+  .activity::after {
+    content: "";
+    position: absolute; top: 0; bottom: 0; left: -60%;
+    width: 40%;
+    background: linear-gradient(100deg, transparent, rgba(255,255,255,.75), transparent);
+    transform: skewX(-20deg);
+    opacity: 0; pointer-events: none;
+  }
+  .activity-grid.swap .activity::after {
+    animation: shine .9s ease-out forwards;
+    animation-delay: calc(var(--i) * 85ms + 380ms);
+  }
+  @keyframes shine {
+    0%   { left: -60%; opacity: 1; }
+    100% { left: 130%; opacity: 1; }
+  }
+
+  /* หัวข้อเปลี่ยนข้อความแบบเลื่อนขึ้น + เส้นข้างหัวข้อยืดออก */
+  #activityHeading.swap { animation: headIn .5s cubic-bezier(.2,.9,.25,1) both; }
+  @keyframes headIn {
+    from { opacity: 0; transform: translateX(calc(var(--dir) * 28px)); border-left-width: 22px; letter-spacing: .08em; }
+    to   { opacity: 1; transform: none; border-left-width: 4px; letter-spacing: 0; }
+  }
+
+  a:focus-visible, button:focus-visible { outline: 3px solid var(--focus); outline-offset: 2px; }
+
+  footer { max-width: 1000px; margin: 0 auto; padding: 0 24px 32px; color: var(--muted); font-size: 13px; }
+  footer hr { border: 0; border-top: 1px solid var(--gold); margin: 0 0 12px; }
+
+  /* ===== ปรับขนาดหน้าจออย่างนุ่มนวล =====
+     ค่าที่เปลี่ยนตามขนาดจอจะค่อย ๆ เลื่อน/ย่อขยาย แทนที่จะกระโดด */
+  header, main, .header-inner { transition: padding .45s cubic-bezier(.2,.9,.25,1), gap .45s cubic-bezier(.2,.9,.25,1); }
+  #logo { transition: width .45s cubic-bezier(.2,.9,.25,1), height .45s cubic-bezier(.2,.9,.25,1); }
+  h2 { transition: font-size .4s ease; }
+  .activity-body { transition: height .45s cubic-bezier(.2,.9,.25,1); }
+  .activity-grid { transition: gap .45s cubic-bezier(.2,.9,.25,1); }
+
+  /* แท็บเล็ต */
+  @media (max-width: 900px) {
+    header { padding: 20px; }
+    main { padding: 24px 20px 48px; }
+    #logo { width: 64px; height: 64px; }
+    .activity-grid { grid-template-columns: repeat(auto-fill, minmax(170px, 1fr)); gap: 14px; }
+    h2 { font-size: 19px; }
+  }
+  /* มือถือ */
+  @media (max-width: 520px) {
+    header { padding: 16px; }
+    .header-inner { gap: 14px; }
+    main { padding: 20px 16px 40px; }
+    .class-btn { flex: 1 1 40%; }
+    #logo { width: 56px; height: 56px; }
+    .activity-grid { grid-template-columns: repeat(auto-fill, minmax(145px, 1fr)); gap: 12px; }
+    .activity-body { height: 80px; }
+    h2 { font-size: 18px; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    header, main, .header-inner, #logo, h2, .activity-body, .activity-grid { transition: none; }
+    .activity-grid.swap .activity, .activity-grid.swap .activity::after,
+    #activityHeading.swap, .ripple { animation: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+<!-- โลโก้และชื่อ Header -->
+  <div class="header-inner">
+    <img src="img/DBT FVE.jpg" id="logo" alt="" >
+    <div>
+      <h1 class="dept-th">สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล</h1>
+      <p class="dept-en">Digital Business Technology</p>
+    </div>
+  </div>
+</header>
+
+<main>
+  <section>
+    <h2>ห้องเรียน</h2>
+    <div class="class-menu" id="classMenu"></div>
+  </section>
+
+  <section>
+    <h2 id="activityHeading">กิจกรรมกลาง</h2>
+    <div class="activity-grid" id="activityGrid"></div>
+  </section>
+</main>
+
+<footer>
+  <hr>
+  สาขาวิชาเทคโนโลยีธุรกิจดิจิทัล
+</footer>
+
+<script>
+/* =====================================================
+   ตั้งค่าตรงนี้ได้เลย
+   ===================================================== */
+
+// ชั้นเรียน: id ใช้เป็นคีย์, label คือข้อความที่แสดงบนปุ่ม
+const CLASSES = [
+  { id: "pvc1", label: "ปวช.1" },
+  { id: "pvc2", label: "ปวช.2" },
+  { id: "pvc3", label: "ปวช.3" },
+  { id: "pvs1", label: "ปวส.1" },
+];
+
+// กิจกรรม: ชื่อที่แสดง + ไฟล์หน้าถัดไป
+// ลิงก์สร้างอัตโนมัติจากรูปแบบ  {file}-{ชั้น}.html  เช่น sport-pvc1.html
+// ถ้าต้องการกำหนดลิงก์เองเป็นรายชั้น ให้ใส่ใน links  (ดูตัวอย่างด้านล่าง)
+const ACTIVITIES = [
+  { name: "กีฬาสี",        file: "sport" },
+  { name: "กิจกรรม 2 (สมมุติ)", file: "activity2" },
+  { name: "กิจกรรม 3 (สมมุติ)", file: "activity3" },
+  { name: "กิจกรรม 4 (สมมุติ)", file: "activity4" },
+  { name: "กิจกรรม 5 (สมมุติ)", file: "activity5" },
+];
+
+// กำหนดลิงก์เฉพาะ (ไม่บังคับ) เช่น  { "pvc1/sport": "pages/sport-pvc1.html" }
+const LINKS = {
+  // "pvc1/sport": "pages/sport-pvc1.html",
+};
+
+// โฟลเดอร์/ที่อยู่ของหน้าถัดไป (เว้นว่างไว้ = ไฟล์อยู่โฟลเดอร์เดียวกับหน้านี้)
+const BASE_PATH = "";
+
+/* =====================================================
+   โค้ดทำงาน
+   ===================================================== */
+const menu = document.getElementById("classMenu");
+const grid = document.getElementById("activityGrid");
+const heading = document.getElementById("activityHeading");
+let currentIndex = -1;
+
+function linkFor(classId, act) {
+  return LINKS[classId + "/" + act.file] || `${BASE_PATH}${act.file}-${classId}.html`;
+}
+
+function render(classId) {
+  const idx = CLASSES.findIndex(c => c.id === classId);
+  const cls = CLASSES[idx];
+  const dir = idx >= currentIndex ? 1 : -1;   // ขึ้นชั้นสูง = เข้าจากขวา, ย้อนกลับ = เข้าจากซ้าย
+  currentIndex = idx;
+
+  heading.textContent = `กิจกรรมกลาง ${cls.label}`;
+  heading.style.setProperty("--dir", dir);
+  grid.style.setProperty("--dir", dir);
+
+  menu.querySelectorAll(".class-btn").forEach(b =>
+    b.setAttribute("aria-pressed", b.dataset.id === classId));
+
+  grid.innerHTML = "";
+  ACTIVITIES.forEach((act, i) => {
+    const a = document.createElement("a");
+    a.className = "activity";
+    a.style.setProperty("--i", i);
+    a.href = linkFor(classId, act);   // <-- ปุ่มกิจกรรมลิงก์ไปไฟล์อื่น
+    a.innerHTML = `
+      <div class="activity-title"></div>
+      <div class="activity-body">รูปภาพ</div>`;
+    a.querySelector(".activity-title").textContent = act.name;
+    grid.appendChild(a);
+  });
+
+  // รีสตาร์ตแอนิเมชัน
+  [grid, heading].forEach(el => { el.classList.remove("swap"); void el.offsetWidth; el.classList.add("swap"); });
+
+  if (window.gridGlide) requestAnimationFrame(window.gridGlide.save);
+
+  try { history.replaceState(null, "", "#" + classId); } catch (e) {}
+}
+
+CLASSES.forEach(c => {
+  const b = document.createElement("button");
+  b.type = "button";
+  b.className = "class-btn";
+  b.dataset.id = c.id;
+  b.textContent = c.label;
+  b.addEventListener("click", e => {
+    const r = b.getBoundingClientRect();
+    const dot = document.createElement("span");
+    dot.className = "ripple";
+    dot.style.left = (e.clientX ? e.clientX - r.left : r.width / 2) + "px";
+    dot.style.top  = (e.clientY ? e.clientY - r.top  : r.height / 2) + "px";
+    b.appendChild(dot);
+    setTimeout(() => dot.remove(), 650);
+    render(c.id);
+  });
+  menu.appendChild(b);
+});
+
+/* ป้องกันการคัดลอกข้อความ (กดและเลื่อนได้อย่างเดียว) */
+["copy", "cut", "selectstart", "dragstart", "contextmenu"].forEach(ev =>
+  document.addEventListener(ev, e => e.preventDefault()));
+document.addEventListener("keydown", e => {
+  if ((e.ctrlKey || e.metaKey) && ["a", "c", "x", "s", "u", "p"].includes(e.key.toLowerCase())) e.preventDefault();
+});
+
+/* ===== การ์ด/ปุ่ม "ไหลไปตำแหน่งใหม่" ตอนย่อขยายหน้าจอ =====
+   เมื่อจำนวนคอลัมน์ (หรือจำนวนแถวของปุ่ม) เปลี่ยน
+   ตัวที่ย้ายตำแหน่งจะค่อย ๆ เลื่อนจากที่เดิมไปที่ใหม่ทีละใบ */
+const REDUCED = matchMedia("(prefers-reduced-motion: reduce)");
+
+function glide(container, getItems, signature) {
+  const pos = new WeakMap();
+  let sig = signature();
+  const save = () => getItems().forEach(el => pos.set(el, { x: el.offsetLeft, y: el.offsetTop }));
+  save();
+  let pending = 0;
+  // ทำงานในเฟรมถัดไป เพื่อไม่ให้เกิดข้อผิดพลาด "ResizeObserver loop"
+  new ResizeObserver(() => {
+    if (pending) return;
+    pending = requestAnimationFrame(() => { pending = 0; run(); });
+  }).observe(container);
+
+  function run() {
+    const s = signature();
+    if (s !== sig && !REDUCED.matches) {
+      getItems().forEach((el, i) => {
+        const o = pos.get(el);
+        if (!o) return;
+        const dx = o.x - el.offsetLeft, dy = o.y - el.offsetTop;
+        if (!dx && !dy) return;
+        const delay = i * 45;
+        el.style.transition = "none";
+        el.style.transform = `translate(${dx}px, ${dy}px) scale(.94)`;
+        el.getBoundingClientRect();   // บังคับให้เบราว์เซอร์คำนวณตำแหน่งเริ่มต้นก่อน
+        el.style.transition = `transform .65s cubic-bezier(.2,.9,.25,1.12) ${delay}ms`;
+        el.style.transform = "";
+        setTimeout(() => { el.style.transition = ""; }, 700 + delay);
+      });
+    }
+    sig = s;
+    save();
+  }
+  return { save };
+}
+
+const items = sel => () => [...document.querySelectorAll(sel)];
+window.gridGlide = glide(grid, items(".activity"),
+  () => getComputedStyle(grid).gridTemplateColumns.split(" ").length);
+glide(menu, items(".class-btn"),
+  () => new Set([...menu.children].map(b => b.offsetTop)).size);
+
+const start = CLASSES.find(c => c.id === location.hash.slice(1)) || CLASSES[0];
+render(start.id);
+</script>
+</body>
+</html>
